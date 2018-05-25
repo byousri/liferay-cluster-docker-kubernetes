@@ -1,0 +1,25 @@
+version: '2'
+services:
+  proxy:
+    build: haproxy
+    ports:
+      - "80:80"
+      - "9090:9090"
+    depends_on:
+      - lportal1
+      - lportal2
+  lportal1:
+    build: lportal
+    depends_on:
+      - mysql
+  lportal2:
+    build: lportal
+    depends_on:
+      - mysql
+  mysql:
+    image: mdelapenya/mysql-utf8
+    environment:
+      - MYSQL_ROOT_PASSWORD=QbM223AWf
+      - MYSQL_DATABASE=lportal
+      - character-set-server=utf8mb4
+      - collation-server=utf8mb4_unicode_ci
