@@ -6,13 +6,8 @@ services:
       - "80:80"
       - "9090:9090"
     depends_on:
-      - lportal1
-      - lportal2
-  lportal1:
-    build: lportal
-    depends_on:
-      - mysql
-  lportal2:
+      - liferay
+  liferay:
     build: lportal
     depends_on:
       - mysql
