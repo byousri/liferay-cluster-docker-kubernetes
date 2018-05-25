@@ -4,8 +4,7 @@
 Docker compose and Kubernetes with Liferay 6.2 cluster with replicate node session:
 
 - Mysql
-- liferay 6.2-ce-ga6 node 1
-- liferay 6.2-ce-ga6 node 2
+- liferay 6.2-ce-ga6
 - haproxy
 
 
