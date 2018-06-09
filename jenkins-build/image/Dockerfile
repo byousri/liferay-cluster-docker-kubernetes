@@ -22,7 +22,7 @@ WORKDIR /usr/local
 
 
 
-RUN apt-get install -y ca-certificates file openssl
+RUN apt-get install -y ca-certificates openssl
 
 ENV RUNC_VERSION v0.1.0
 
