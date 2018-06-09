@@ -1,0 +1,134 @@
+---
+#Service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    cerebri.service: node1
+  name: node1
+spec:
+  ports:
+  - name: "8983"
+    port: 8983
+    targetPort: 8983
+  - name: "8081"
+    port: 8081
+    targetPort: 8081
+  - name: "2181"
+    port: 2181
+    targetPort: 2181
+  - name: "2888"
+    port: 2888
+    targetPort: 2888
+  - name: "3888"
+    port: 3888
+    targetPort: 3888
+  - name: "4000"
+    port: 4000
+    targetPort: 4000
+  - name: "8009"
+    port: 8009
+    targetPort: 8009
+  - name: "7500"
+    port: 7500
+    targetPort: 7500
+  - name: "8080"
+    port: 8080
+    targetPort: 8080
+  selector:
+    cerebri.service: node1
+---
+#Service
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    cerebri.service: node1public
+  name: node1public
+spec:
+  type: NodePort
+  ports:
+  - name: "8983public"
+    port: 8983
+#    targetPort: 8983
+  - name: "8081public"
+    port: 8081
+#    targetPort: 8081
+  selector:
+    cerebri.service: node1
+---
+#Deployment
+#apiVersion: extensions/v1beta1
+apiVersion: v1
+#kind: Deployment
+kind: Pod
+metadata:
+  labels:
+    cerebri.service: node1
+  name: node1
+spec:
+      containers:
+      - env:
+        - name: SERVER_MEM
+          value: 3g
+        - name: SOLR_SHARDS
+          value: "1"
+        - name: SOLR_REPL
+          value: "3"
+        - name: DB_ENDPOINT
+          value: jdbc:postgresql://postgres:5432/liferay
+        - name: DB_USER
+          value: admin
+        - name: DB_PASS
+          value: 1q2q2w3w
+        - name: LDAP_URL
+          value: ldaps://ad.cerebri.systems:636
+        - name: LDAP_BASE
+          value: '"CN=Users,DC=cerebri,DC=systems"'
+        - name: LDAP_USER
+          value: '"CEREBRI\Administrator"'
+        - name: LDAP_PASS
+          value: '"Zcb&?*@bY?"'
+        - name: COMPANY_NAME
+          value: MuellerInc_QA
+        - name: COMPANY_ID
+          value: mueller-qa.com
+        - name: WEB_SERVER
+          value: mueller-qa.cerebri.systems
+        image: cerebriai/liferay:CE-6.2.5-PROD-qa
+        imagePullPolicy: Always
+        name: node1
+        ports:
+        - containerPort: 8983
+        - containerPort: 8081
+        - containerPort: 2181
+        - containerPort: 2888
+        - containerPort: 3888
+        - containerPort: 8009
+        - containerPort: 4000
+        - containerPort: 7500
+        - containerPort: 8080
+        readinessProbe:
+         tcpSocket:
+           port: 2181
+         initialDelaySeconds: 15
+         periodSeconds: 10
+        resources:
+          limits:
+            memory: "8589934592"
+        volumeMounts:
+        - mountPath: /opt/liferay/data
+          name: liferay-data
+        - mountPath: /opt/liferay/deploy
+          name: liferay-deploy1
+      restartPolicy: Always
+      volumes:
+      - name: liferay-data
+        persistentVolumeClaim:
+          claimName: liferay-data
+      - name: liferay-deploy1
+        persistentVolumeClaim:
+          claimName: liferay-deploy1
+      imagePullSecrets:
+        - name: cerebri-registry
+---

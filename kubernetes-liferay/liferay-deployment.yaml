@@ -1,0 +1,58 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: liferay-service
+spec:
+      containers:
+      - env:
+        - name: SERVER_MEM
+          value: 3g
+        - name: SOLR_SHARDS
+          value: "1"
+        - name: SOLR_REPL
+          value: "3"
+        - name: DB_ENDPOINT
+          value: jdbc:postgresql://postgres:5432/liferay
+        - name: DB_USER
+          value: admin
+        - name: DB_PASS
+          value: 1q2q2w3w
+        - name: COMPANY_NAME
+          value: Yousri
+        image: mdelapenya/liferay-portal:7-ce-ga6-tomcat-mysql
+        imagePullPolicy: Always
+        name: node1
+        ports:
+        - containerPort: 8983
+        - containerPort: 8081
+        - containerPort: 2181
+        - containerPort: 2888
+        - containerPort: 3888
+        - containerPort: 8009
+        - containerPort: 4000
+        - containerPort: 7500
+        - containerPort: 8080
+        readinessProbe:
+         tcpSocket:
+           port: 2181
+         initialDelaySeconds: 15
+         periodSeconds: 10
+        resources:
+          limits:
+            memory: "8589934592"
+        volumeMounts:
+        - mountPath: /opt/liferay/data
+          name: liferay-data
+        - mountPath: /opt/liferay/deploy
+          name: liferay-deploy1
+      restartPolicy: Always
+      volumes:
+      - name: liferay-data
+        persistentVolumeClaim:
+          claimName: liferay-data
+      - name: liferay-deploy1
+        persistentVolumeClaim:
+          claimName: liferay-deploy1
+      imagePullSecrets:
+        - name: cerebri-registry
+---

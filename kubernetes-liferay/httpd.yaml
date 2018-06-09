@@ -1,0 +1,49 @@
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    httpd.service: httpd
+  name: httpd
+spec:
+  type: NodePort
+  ports:
+  - name: "80"
+    port: 80
+    targetPort: 80
+  - name: "443"
+    port: 443
+    targetPort: 443
+  selector:
+    httpd.service: httpd
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  labels:
+    httpd.service: httpd
+  name: httpd
+spec:
+  replicas: 2
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        httpd.service: httpd
+    spec:
+      containers:
+      - env:
+        - name: SITE_NAME
+          value: cerebriai.systems
+        - name: SELFSIGNED_CERT
+          value: "false"
+        image: cerebriai/httpd:supervisord-ps
+        name: httpd
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        resources:
+          limits:
+            memory: 4Gi
+      restartPolicy: Always
+      imagePullSecrets:
+      - name: cerebriai-registry
