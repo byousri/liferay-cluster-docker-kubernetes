@@ -19,18 +19,13 @@ ENV GOSU_URL=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION
 
 WORKDIR /usr/local
 
-
-RUN apt-get install build-essential libsdl2-dev libsdl2-ttf-dev libpango1.0-dev \
-                     libgl1-mesa-dev libopenal-dev libsndfile-dev libmpg123-dev \
-                     libgmp-dev
-
-# To install Ruby itself - if you are using rvm or rbenv, please skip this step
-RUN apt-get install ruby-dev
-
-# If you are using a Ruby version manager (i.e. rvm or rbenv)
-RUN install gosu
-# If you are using system Ruby, you will need "sudo" to install Ruby libraries (gems)
-RUN gem install gosu
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64" \
+    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64.asc" \
+    && gpg --verify /usr/local/bin/gosu.asc \
+    && rm /usr/local/bin/gosu.asc \
+    && rm -r /root/.gnupg/ \
+    && chmod +x /usr/local/bin/gosu
 
 
 
