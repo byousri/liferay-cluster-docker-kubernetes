@@ -22,7 +22,7 @@ WORKDIR /usr/local
 
 
 
-RUN apk add --no-cache ca-certificates file openssl
+RUN apt-get install -y --no-cache ca-certificates file openssl
 
 ENV RUNC_VERSION v0.1.0
 
