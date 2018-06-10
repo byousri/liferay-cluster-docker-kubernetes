@@ -16,25 +16,25 @@ spec:
           app: liferay
           role: frontend
           env: dev
-    spec:
-      containers:
-      - name: frontend
-        image: gcr.io/cloud-solutions-images/gceme:1.0.0
-        resources:
-          requests:
-            memory: 6Gi
-            cpu: 100m
-          env:
-          - name: GET_HOSTS_FROM
-            value: dns
-        imagePullPolicy: Always
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 8080
-            initialDelaySeconds: 300
-            periodSeconds: 60
-            timeoutSeconds: 20
-        ports:
-        - name: frontend
-          containerPort: 8080
+		spec:
+		  containers:
+		  - name: frontend
+			image: gcr.io/cloud-solutions-images/gceme:1.0.0
+			resources:
+			  requests:
+				memory: 6Gi
+				cpu: 100m
+			  env:
+			  - name: GET_HOSTS_FROM
+				value: dns
+			imagePullPolicy: Always
+			livenessProbe:
+			  httpGet:
+				path: /
+				port: 8080
+				initialDelaySeconds: 300
+				periodSeconds: 60
+				timeoutSeconds: 20
+			ports:
+			- name: frontend
+			  containerPort: 8080
