@@ -3,8 +3,8 @@
 
 
 
-kind: ReplicaSet
-apiVersion: v1
+kind: Deployment
+apiVersion: extensions/v1beta1
 metadata:
   name: liferay-dev
 spec:
@@ -18,7 +18,7 @@ spec:
           env: dev
     spec:
       containers:
-      - name: frontend
+      - name: liferay7
         image: gcr.io/cloud-solutions-images/gceme:1.0.0
         resources:
           requests:
