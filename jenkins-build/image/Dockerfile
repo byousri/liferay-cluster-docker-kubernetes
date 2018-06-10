@@ -20,64 +20,14 @@ ENV GOSU_URL=https://github.com/tianon/gosu/releases/download/$GOSU_VERSION
 WORKDIR /usr/local
 
 
+RUN gpg --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && curl -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64" \
+    && curl -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64.asc" \
+    && gpg --verify /usr/local/bin/gosu.asc \
+    && rm /usr/local/bin/gosu.asc \
+    && rm -r /root/.gnupg/ \
+    && chmod +x /usr/local/bin/gosu
 
-
-RUN apt-get install -y --no-cache ca-certificates file openssl
-
-ENV RUNC_VERSION v0.1.0
-
-RUN mkdir -p /go/src/github.com/opencontainers \
-	&& wget -O- "https://github.com/opencontainers/runc/archive/${RUNC_VERSION}.tar.gz" \
-		| tar -xzC /go/src/github.com/opencontainers \
-	&& mv "/go/src/github.com/opencontainers/runc-${RUNC_VERSION#v}" /go/src/github.com/opencontainers/runc
-
-ENV GOPATH $GOPATH:/go/src/github.com/opencontainers/runc/Godeps/_workspace
-
-# disable CGO for ALL THE THINGS (to help ensure no libc)
-ENV CGO_ENABLED 0
-
-ENV BUILD_FLAGS="-v -ldflags '-d -s -w'"
-
-COPY *.go /go/src/github.com/tianon/gosu/
-WORKDIR /go/src/github.com/tianon/gosu
-
-# gosu-$(dpkg --print-architecture)
-RUN set -x \
-	&& eval "GOARCH=amd64 go build $BUILD_FLAGS -o /go/bin/gosu-amd64" \
-	&& file /go/bin/gosu-amd64 \
-	&& /go/bin/gosu-amd64 --version \
-	&& /go/bin/gosu-amd64 nobody id \
-	&& /go/bin/gosu-amd64 nobody ls -l /proc/self/fd
-RUN set -x \
-	&& eval "GOARCH=386 go build $BUILD_FLAGS -o /go/bin/gosu-i386" \
-	&& file /go/bin/gosu-i386 \
-	&& /go/bin/gosu-i386 --version \
-	&& /go/bin/gosu-i386 nobody id \
-	&& /go/bin/gosu-i386 nobody ls -l /proc/self/fd
-RUN set -x \
-	&& eval "GOARCH=arm GOARM=5 go build $BUILD_FLAGS -o /go/bin/gosu-armel" \
-	&& file /go/bin/gosu-armel
-RUN set -x \
-	&& eval "GOARCH=arm GOARM=6 go build $BUILD_FLAGS -o /go/bin/gosu-armhf" \
-	&& file /go/bin/gosu-armhf
-# boo Raspberry Pi, making life hard
-#RUN set -x \
-#	&& eval "GOARCH=arm GOARM=7 go build $BUILD_FLAGS -o /go/bin/gosu-armhf" \
-#	&& file /go/bin/gosu-armhf
-RUN set -x \
-	&& eval "GOARCH=arm64 go build $BUILD_FLAGS -o /go/bin/gosu-arm64" \
-	&& file /go/bin/gosu-arm64
-RUN set -x \
-	&& eval "GOARCH=ppc64 go build $BUILD_FLAGS -o /go/bin/gosu-ppc64" \
-	&& file /go/bin/gosu-ppc64
-RUN set -x \
-	&& eval "GOARCH=ppc64le go build $BUILD_FLAGS -o /go/bin/gosu-ppc64el" \
-	&& file /go/bin/gosu-ppc64el
-RUN set -x \
-	&& eval "GOARCH=s390x go build $BUILD_FLAGS -o /go/bin/gosu-s390x" \
-	&& file /go/bin/gosu-s390x
-
-RUN file /go/bin/gosu-*
 
 
 
