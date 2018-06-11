@@ -1,0 +1,58 @@
+
+
+
+
+
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: liferay-prod
+spec:
+    replicas: 3
+    selector:
+      matchLabels:
+        app: liferay
+    template:
+      metadata:
+        name: liferay
+        labels:
+          app: liferay
+          role: frontend
+          env: prod
+      spec:
+        containers:
+        - name: liferay7
+          image: gcr.io/api-project-748720942306/liferay7:v1
+          resources:
+            requests:
+              memory: 6Gi
+              cpu: 100m
+          env:
+          - name: GET_HOSTS_FROM
+            value: dns
+          - name: LIFERAY_DB_HOST
+            value: mysql:3306
+          - name: LIFERAY_DB_NAME
+            value: liferay-prod
+          - name: LIFERAY_DB_USER
+            value: root
+          - name: LIFERAY_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mysql
+                key: password
+          ports:
+          - name: frontend
+            containerPort: 8080
+          volumeMounts:
+            - name: liferay-data-persistent-storage
+              mountPath: /liferay/data
+            - name: liferay-deploy-persistent-storage
+              mountPath: /liferay/deploy
+      volumes:
+        - name: liferay-data-persistent-storage
+          persistentVolumeClaim:
+            claimName: liferay-data-volumeclaim
+        - name: liferay-deploy-persistent-storage
+          persistentVolumeClaim:
+            claimName: liferay-deploy-volumeclaim

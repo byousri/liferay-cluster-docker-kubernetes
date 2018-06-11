@@ -1,0 +1,26 @@
+
+
+
+
+
+
+
+
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: liferay-service-prod
+  labels:
+    app: liferay
+    tier: frontend
+    env: prod
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8080
+  selector:
+    role: frontend
+    app: liferay
+    env: prod

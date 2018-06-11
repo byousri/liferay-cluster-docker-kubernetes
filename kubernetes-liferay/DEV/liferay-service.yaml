@@ -10,15 +10,17 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: liferay-service
+  name: liferay-service-dev
   labels:
     app: liferay
     tier: frontend
+    env: dev
 spec:
   type: LoadBalancer
   ports:
-    - port: 80
+  - port: 80
     targetPort: 8080
   selector:
     role: frontend
     app: liferay
+    env: dev

@@ -1,0 +1,33 @@
+
+
+kind: Deployment
+apiVersion: extensions/v1beta1
+metadata:
+  name: liferay-dev
+spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: liferay
+    template:
+      metadata:
+        name: liferay
+        labels:
+          app: liferay
+          role: frontend
+          env: dev
+      spec:
+        containers:
+        - name: liferay7
+          image: gcr.io/api-project-748720942306/liferay7:v1
+          resources:
+            requests:
+              memory: 6Gi
+              cpu: 100m
+          env:
+          - name: GET_HOSTS_FROM
+            value: dns
+          ports:
+          - name: frontend
+            containerPort: 8080
+    
