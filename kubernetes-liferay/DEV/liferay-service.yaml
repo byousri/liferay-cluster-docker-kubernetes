@@ -23,4 +23,7 @@ spec:
   selector:
     role: frontend
     app: liferay
+<<<<<<< HEAD:kubernetes-liferay/DEV/liferay-service.yaml
     env: dev
+=======
+>>>>>>> 5abcb417700003117f88b323296cb32f3c8330a4:kubernetes-liferay/liferay-service.yaml
