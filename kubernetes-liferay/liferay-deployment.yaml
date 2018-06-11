@@ -22,7 +22,7 @@ spec:
       spec:
         containers:
         - name: liferay7
-          image: gcr.io/cloud-solutions-images/gceme:1.0.0
+          image: gcr.io/api-project-748720942306/liferay7:v1
           resources:
             requests:
               memory: 6Gi
